@@ -1,0 +1,3 @@
+# binaires et artefacts compiles (recompiles par make / la CI), jamais committes
+mcp-slack-*
+*.dxt

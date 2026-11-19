@@ -1,0 +1,38 @@
+{
+  "name": "mcp-slack",
+  "version": "1.1.0",
+  "description": "Serveur MCP qui donne a Claude un acces en lecture a ton propre Slack, en reutilisant ta session de navigateur deja connectee. Tourne entierement en local, aucune app ni bot a faire approuver par un admin.",
+  "main": "bin/index.js",
+  "bin": {
+    "mcp-slack": "bin/index.js"
+  },
+  "optionalDependencies": {
+    "mcp-slack-darwin-amd64": "1.1.0",
+    "mcp-slack-darwin-arm64": "1.1.0",
+    "mcp-slack-linux-amd64": "1.1.0",
+    "mcp-slack-linux-arm64": "1.1.0",
+    "mcp-slack-windows-amd64": "1.1.0",
+    "mcp-slack-windows-arm64": "1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/florianzilliox/mcp-slack.git"
+  },
+  "keywords": [
+    "mcp",
+    "slack",
+    "slack-api",
+    "model context protocol",
+    "model",
+    "context",
+    "protocol"
+  ],
+  "author": {
+    "name": "Florian Zilliox"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/florianzilliox/mcp-slack/issues"
+  },
+  "homepage": "https://github.com/florianzilliox/mcp-slack#readme"
+}

@@ -5,10 +5,16 @@ on:
     tags:
       - '*'
 
+# Image poussee sur GitHub Container Registry (ghcr.io) avec le GITHUB_TOKEN
+# du depot : aucun compte DockerHub ni secret supplementaire. L'install par
+# binaire ne depend pas de cette image, c'est un bonus pour qui veut Docker.
 env:
-  DOCKERHUB_IMAGE_NAME: korotovsky/slack-mcp-server
-  DOCKERHUB_USERNAME: korotovsky
+  IMAGE_NAME: florianzilliox/mcp-slack
   TAG: ${{ github.ref_name == 'main' && 'latest' || github.ref_type == 'tag' && github.ref_name && startsWith(github.ref_name, 'v') && github.ref_name || 'unknown' }}
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
@@ -37,7 +43,7 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            --tag ghcr.io/${{ env.DOCKERHUB_IMAGE_NAME }}:latest \
-            --tag ghcr.io/${{ env.DOCKERHUB_IMAGE_NAME }}:${{ env.TAG }} \
+            --tag ghcr.io/${{ env.IMAGE_NAME }}:latest \
+            --tag ghcr.io/${{ env.IMAGE_NAME }}:${{ env.TAG }} \
             --push \
             .

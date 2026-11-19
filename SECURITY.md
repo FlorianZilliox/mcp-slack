@@ -1,38 +1,30 @@
-# Security Policy
+# Sécurité
 
-## Supported Versions
+## Ce que fait l'outil, et ce qu'il ne fait pas
 
-Actively maintained and supported are the following versions:
+`mcp-slack` donne à Claude un accès en lecture à ton propre Slack. Pour cela, il
+réutilise la session de ton navigateur : un token (`xoxc`) et un cookie (`d`).
 
-| Version   | Supported          |
-|-----------|--------------------|
-| `1.1.x`   | ✅                 |
+- Tout tourne en local, sur ta machine. Rien n'est envoyé à un serveur tiers.
+- La session est rangée sur ton disque, dans le dossier de configuration de ton
+  utilisateur (`<config utilisateur>/mcp-slack/auth.json`), en lecture par ton
+  compte seulement.
+- Chacun se connecte à son propre espace et ne voit que son propre Slack. Rien
+  n'est partagé entre les personnes.
+- Les outils d'écriture (poster un message, réagir) sont désactivés par défaut.
 
-If you're using an unsupported version, we strongly recommend upgrading to the latest release.
+## Protéger ta session
 
-## Reporting a Vulnerability
+Le token et le cookie équivalent à ta connexion Slack : traite le fichier
+`auth.json` comme un mot de passe. Ne le copie pas, ne le colle pas dans un
+message ou un ticket, ne le mets pas dans un dépôt. Si tu penses qu'il a fuité,
+déconnecte ta session Slack (ce qui invalide le token et le cookie), puis relance
+`mcp-slack login <workspace>` pour en obtenir une nouvelle.
 
-If you discover a security vulnerability, **please do not create a public issue**.
+## Signaler une faille
 
-Instead, follow these steps:
-
-1. **Email directly at:** [dmitry@korotovsky.io](mailto:dmitry@korotovsky.io)
-2. Provide as much detail as possible, including:
-   - Steps to reproduce the vulnerability
-   - Affected versions
-   - Potential impact
-   - Any suggested remediation (if available)
-
-## What to Expect
-
-- We will confirm receipt of your report.
-- We will investigate the issue and may reach out for further details.
-- Once the issue is confirmed and a fix is developed, we will coordinate a release.
-
-## Responsible Disclosure
-
-We kindly ask that you:
-- Do not publicly disclose the vulnerability until we have released a fix.
-- Give us adequate time to address the issue.
-
-Your help in keeping this project and its users secure is highly appreciated. 💙
+Si tu découvres une vulnérabilité, ne la publie pas dans une issue publique.
+Ouvre un avis de sécurité privé sur le dépôt GitHub
+(onglet « Security » > « Report a vulnerability »), ou contacte directement le
+propriétaire du dépôt. Merci de laisser un délai raisonnable pour corriger avant
+toute divulgation.

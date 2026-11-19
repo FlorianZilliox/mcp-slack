@@ -3,8 +3,8 @@ package handler
 import (
 	"testing"
 
-	"github.com/gocarina/gocsv"
 	"github.com/florianzilliox/mcp-slack/pkg/provider/edge"
+	"github.com/gocarina/gocsv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

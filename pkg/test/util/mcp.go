@@ -50,7 +50,7 @@ func SetupMCP(cfg MCPConfig) (*MCPConnection, error) {
 	}
 
 	cmd := exec.CommandContext(ctx,
-		"go", "run", cwd+"/../../cmd/slack-mcp-server/main.go",
+		"go", "run", cwd+"/../../cmd/mcp-slack",
 		"--transport", "sse",
 	)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}

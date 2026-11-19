@@ -1,4 +1,4 @@
-name: Release NPM
+name: Release
 
 on:
   push:
@@ -45,11 +45,15 @@ jobs:
           make_latest: true
           files: |
             LICENSE
-            build/slack-mcp-server-*
-            build/slack-mcp-server.dxt
+            build/mcp-slack-*
+            build/mcp-slack.dxt
             .env.dist
             docker-compose.yml
 
+      # Publication npm optionnelle : seulement si un NPM_TOKEN est configure.
+      # Sans compte npm, le tag produit quand meme la release GitHub avec les
+      # binaires (l'install par binaire ne depend pas de npm).
       - name: Publish npm
+        if: ${{ env.NPM_TOKEN != '' }}
         run:
           make npm-publish

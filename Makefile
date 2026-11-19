@@ -27,8 +27,8 @@ CLEAN_TARGETS += $(foreach os,$(OSES),$(foreach arch,$(ARCHS),./build/$(BINARY_N
 CLEAN_TARGETS += $(foreach os,$(OSES),$(foreach arch,$(ARCHS),./build/extension.dxt/server/$(BINARY_NAME)-$(os)-$(arch)))
 CLEAN_TARGETS += $(foreach os,$(OSES),$(foreach arch,$(ARCHS),./npm/$(BINARY_NAME)-$(os)-$(arch)/bin/))
 CLEAN_TARGETS += $(foreach os,$(OSES),$(foreach arch,$(ARCHS),./npm/$(BINARY_NAME)-$(os)-$(arch)/.npmrc))
-CLEAN_TARGETS += ./npm/slack-mcp-server/.npmrc ./npm/slack-mcp-server/LICENSE ./npm/slack-mcp-server/README.md build/extension.dxt/manifest.json build/extension.dxt/icon.png
-CLEAN_TARGETS += ./build/slack-mcp-server.dxt ./build/slack-mcp-server-$(NPM_VERSION).dxt
+CLEAN_TARGETS += ./npm/mcp-slack/.npmrc ./npm/mcp-slack/LICENSE ./npm/mcp-slack/README.md build/extension.dxt/manifest.json build/extension.dxt/icon.png
+CLEAN_TARGETS += ./build/mcp-slack.dxt ./build/mcp-slack-$(NPM_VERSION).dxt
 
 # The help will print out all targets with their descriptions organized bellow their categories. The categories are represented by `##@` and the target descriptions by `##`.
 # The awk commands is responsible to read the entire set of makefiles included in this invocation, looking for lines of the file as xyz: ## something, and then pretty-format the target and help. Then, if there's a line with ##@ something, that gets pretty-printed as a category.
@@ -63,12 +63,12 @@ build-dxt: ## Build DTX extension
 		DIRNAME=$(BINARY_NAME)-$(os)-$(arch); \
 		cp ./build/$$EXECUTABLE ./build/extension.dxt/server/; \
 	))
-	cp npm/slack-mcp-server/bin/index.js ./build/extension.dxt/server/
+	cp npm/mcp-slack/bin/index.js ./build/extension.dxt/server/
 	cp images/icon.png ./build/extension.dxt/
 	jq '.version = "$(NPM_VERSION)"' ./manifest-dxt.json > tmp.json && mv tmp.json ./build/extension.dxt/manifest.json;
-	chmod +x build/extension.dxt/server/slack-mcp-server-*
-	dxt pack build/extension.dxt/ build/slack-mcp-server-${NPM_VERSION}.dxt
-	cp build/slack-mcp-server-${NPM_VERSION}.dxt build/slack-mcp-server.dxt
+	chmod +x build/extension.dxt/server/mcp-slack-*
+	dxt pack build/extension.dxt/ build/mcp-slack-${NPM_VERSION}.dxt
+	cp build/mcp-slack-${NPM_VERSION}.dxt build/mcp-slack.dxt
 
 .PHONY: npm-copy-binaries
 npm-copy-binaries: build-all-platforms ## Copy the binaries to each npm package
@@ -89,11 +89,11 @@ npm-publish: npm-copy-binaries ## Publish the npm packages
 		npm publish; \
 		cd ../..; \
 	))
-	cp README.md LICENSE ./npm/slack-mcp-server/
-	echo '//registry.npmjs.org/:_authToken=$(NPM_TOKEN)' >> ./npm/slack-mcp-server/.npmrc
-	jq '.version = "$(NPM_VERSION)"' ./npm/slack-mcp-server/package.json > tmp.json && mv tmp.json ./npm/slack-mcp-server/package.json; \
-	jq '.optionalDependencies |= with_entries(.value = "$(NPM_VERSION)")' ./npm/slack-mcp-server/package.json > tmp.json && mv tmp.json ./npm/slack-mcp-server/package.json; \
-	cd npm/slack-mcp-server && npm publish
+	cp README.md LICENSE ./npm/mcp-slack/
+	echo '//registry.npmjs.org/:_authToken=$(NPM_TOKEN)' >> ./npm/mcp-slack/.npmrc
+	jq '.version = "$(NPM_VERSION)"' ./npm/mcp-slack/package.json > tmp.json && mv tmp.json ./npm/mcp-slack/package.json; \
+	jq '.optionalDependencies |= with_entries(.value = "$(NPM_VERSION)")' ./npm/mcp-slack/package.json > tmp.json && mv tmp.json ./npm/mcp-slack/package.json; \
+	cd npm/mcp-slack && npm publish
 
 .PHONY: deps
 deps: ## Download dependencies

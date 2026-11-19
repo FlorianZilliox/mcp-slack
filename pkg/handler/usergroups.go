@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gocarina/gocsv"
 	"github.com/florianzilliox/mcp-slack/pkg/provider"
+	"github.com/gocarina/gocsv"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/slack-go/slack"
 	"go.uber.org/zap"

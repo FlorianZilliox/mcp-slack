@@ -15,12 +15,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gocarina/gocsv"
 	"github.com/florianzilliox/mcp-slack/pkg/limiter"
 	"github.com/florianzilliox/mcp-slack/pkg/provider"
 	"github.com/florianzilliox/mcp-slack/pkg/provider/edge"
 	"github.com/florianzilliox/mcp-slack/pkg/server/auth"
 	"github.com/florianzilliox/mcp-slack/pkg/text"
+	"github.com/gocarina/gocsv"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/slack-go/slack"
 	slackGoUtil "github.com/takara2314/slack-go-util"

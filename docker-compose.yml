@@ -1,6 +1,6 @@
 services:
   mcp-server:
-    image: ghcr.io/korotovsky/slack-mcp-server:latest
+    image: ghcr.io/florianzilliox/mcp-slack:latest
     restart: unless-stopped
     networks:
       - app-tier

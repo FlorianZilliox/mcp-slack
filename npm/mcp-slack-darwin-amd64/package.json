@@ -1,0 +1,11 @@
+{
+  "name": "mcp-slack-darwin-amd64",
+  "version": "1.1.0",
+  "description": "Binaire de plateforme pour mcp-slack (serveur MCP Slack en lecture, local).",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ]
+}

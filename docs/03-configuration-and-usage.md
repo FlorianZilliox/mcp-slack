@@ -4,7 +4,7 @@ You can configure the MCP server using command line arguments and environment va
 
 ### Using DXT
 
-For [Claude Desktop](https://claude.ai/download) users, you can use the DXT extension to run the MCP server without needing to edit the `claude_desktop_config.json` file directly. Download the [latest version](https://github.com/korotovsky/slack-mcp-server/releases/latest/download/slack-mcp-server.dxt) of the DXT Extension from [releases](https://github.com/korotovsky/slack-mcp-server/releases) page.
+For [Claude Desktop](https://claude.ai/download) users, you can use the DXT extension to run the MCP server without needing to edit the `claude_desktop_config.json` file directly. Download the [latest version](https://github.com/florianzilliox/mcp-slack/releases/latest/download/mcp-slack.dxt) of the DXT Extension from [releases](https://github.com/florianzilliox/mcp-slack/releases) page.
 
 1. Open Claude Desktop and go to the `Settings` menu.
 2. Click on the `Extensions` tab.
@@ -25,16 +25,16 @@ The MCP server can be installed using the Cursor One-Click method.
 
 Below are prepared configurations:
 
- - `npx` and `xoxc/xoxd` method: [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=slack-mcp-server&config=eyJjb21tYW5kIjogIm5weCAteSBzbGFjay1tY3Atc2VydmVyQGxhdGVzdCAtLXRyYW5zcG9ydCBzdGRpbyIsImVudiI6IHsiU0xBQ0tfTUNQX1hPWENfVE9LRU4iOiAieG94Yy0uLi4iLCAiU0xBQ0tfTUNQX1hPWERfVE9LRU4iOiAieG94ZC0uLi4ifSwiZGlzYWJsZWQiOiBmYWxzZSwiYXV0b0FwcHJvdmUiOiBbXX0%3D)
- - `npx` and `xoxp` method: [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=slack-mcp-server&config=eyJjb21tYW5kIjogIm5weCAteSBzbGFjay1tY3Atc2VydmVyQGxhdGVzdCAtLXRyYW5zcG9ydCBzdGRpbyIsImVudiI6IHsiU0xBQ0tfTUNQX1hPWFBfVE9LRU4iOiAieG94cC0uLi4ifSwiZGlzYWJsZWQiOiBmYWxzZSwiYXV0b0FwcHJvdmUiOiBbXX0%3D)
- - `npx` and `xoxb` method: [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=slack-mcp-server&config=eyJjb21tYW5kIjogIm5weCAteSBzbGFjay1tY3Atc2VydmVyQGxhdGVzdCAtLXRyYW5zcG9ydCBzdGRpbyIsImVudiI6IHsiU0xBQ0tfTUNQX1hPWEJfVE9LRU4iOiAieG94Yi0uLi4ifSwiZGlzYWJsZWQiOiBmYWxzZSwiYXV0b0FwcHJvdmUiOiBbXX0%3D)
+ - `npx` and `xoxc/xoxd` method: [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=mcp-slack&config=eyJjb21tYW5kIjogIm5weCAteSBtY3Atc2xhY2tAbGF0ZXN0IC0tdHJhbnNwb3J0IHN0ZGlvIiwiZW52IjogeyJTTEFDS19NQ1BfWE9YQ19UT0tFTiI6ICJ4b3hjLS4uLiIsICJTTEFDS19NQ1BfWE9YRF9UT0tFTiI6ICJ4b3hkLS4uLiJ9LCJkaXNhYmxlZCI6IGZhbHNlLCJhdXRvQXBwcm92ZSI6IFtdfQ%3D%3D)
+ - `npx` and `xoxp` method: [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=mcp-slack&config=eyJjb21tYW5kIjogIm5weCAteSBtY3Atc2xhY2tAbGF0ZXN0IC0tdHJhbnNwb3J0IHN0ZGlvIiwiZW52IjogeyJTTEFDS19NQ1BfWE9YUF9UT0tFTiI6ICJ4b3hwLS4uLiJ9LCJkaXNhYmxlZCI6IGZhbHNlLCJhdXRvQXBwcm92ZSI6IFtdfQ%3D%3D)
+ - `npx` and `xoxb` method: [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=mcp-slack&config=eyJjb21tYW5kIjogIm5weCAteSBtY3Atc2xhY2tAbGF0ZXN0IC0tdHJhbnNwb3J0IHN0ZGlvIiwiZW52IjogeyJTTEFDS19NQ1BfWE9YQl9UT0tFTiI6ICJ4b3hiLS4uLiJ9LCJkaXNhYmxlZCI6IGZhbHNlLCJhdXRvQXBwcm92ZSI6IFtdfQ%3D%3D)
 
 > [!IMPORTANT]
 > Remember to replace tokens in the configuration with your own tokens, as they are just examples.
 
 ### Using npx
 
-If you have npm installed, this is the fastest way to get started with `slack-mcp-server` on Claude Desktop.
+If you have npm installed, this is the fastest way to get started with `mcp-slack` on Claude Desktop.
 
 Open your `claude_desktop_config.json` and add the mcp server to the list of `mcpServers`:
 
@@ -49,7 +49,7 @@ Open your `claude_desktop_config.json` and add the mcp server to the list of `mc
       "command": "npx",
       "args": [
         "-y",
-        "slack-mcp-server@latest",
+        "mcp-slack@latest",
         "--transport",
         "stdio"
       ],
@@ -69,7 +69,7 @@ Open your `claude_desktop_config.json` and add the mcp server to the list of `mc
       "command": "npx",
       "args": [
         "-y",
-        "slack-mcp-server@latest",
+        "mcp-slack@latest",
         "--transport",
         "stdio"
       ],
@@ -89,7 +89,7 @@ Open your `claude_desktop_config.json` and add the mcp server to the list of `mc
       "command": "npx",
       "args": [
         "-y",
-        "slack-mcp-server@latest",
+        "mcp-slack@latest",
         "--transport",
         "stdio"
       ],
@@ -117,7 +117,7 @@ Open your `claude_desktop_config.json` and add the mcp server to the list of `mc
         "--rm",
         "-e",
         "SLACK_MCP_XOXP_TOKEN",
-        "ghcr.io/korotovsky/slack-mcp-server",
+        "ghcr.io/florianzilliox/mcp-slack",
         "--transport",
         "stdio"
       ],
@@ -143,7 +143,7 @@ Open your `claude_desktop_config.json` and add the mcp server to the list of `mc
         "SLACK_MCP_XOXC_TOKEN",
         "-e",
         "SLACK_MCP_XOXD_TOKEN",
-        "ghcr.io/korotovsky/slack-mcp-server",
+        "ghcr.io/florianzilliox/mcp-slack",
         "--transport",
         "stdio"
       ],
@@ -223,24 +223,24 @@ and then use the endpoint `https://903d-xxx-xxxx-xxxx-10b4.ngrok-free.app` for y
 
 ### Using Docker
 
-For detailed information about all environment variables, see [Environment Variables](https://github.com/korotovsky/slack-mcp-server?tab=readme-ov-file#environment-variables).
+For detailed information about all environment variables, see [Environment Variables](https://github.com/florianzilliox/mcp-slack?tab=readme-ov-file#environment-variables).
 
 ```bash
 export SLACK_MCP_XOXC_TOKEN=xoxc-...
 export SLACK_MCP_XOXD_TOKEN=xoxd-...
 
-docker pull ghcr.io/korotovsky/slack-mcp-server:latest
+docker pull ghcr.io/florianzilliox/mcp-slack:latest
 docker run -i --rm \
   -e SLACK_MCP_XOXC_TOKEN \
   -e SLACK_MCP_XOXD_TOKEN \
-  ghcr.io/korotovsky/slack-mcp-server:latest --transport stdio
+  ghcr.io/florianzilliox/mcp-slack:latest --transport stdio
 ```
 
 Or, the docker-compose way:
 
 ```bash
-wget -O docker-compose.yml https://github.com/korotovsky/slack-mcp-server/releases/latest/download/docker-compose.yml
-wget -O .env https://github.com/korotovsky/slack-mcp-server/releases/latest/download/default.env.dist
+wget -O docker-compose.yml https://github.com/florianzilliox/mcp-slack/releases/latest/download/docker-compose.yml
+wget -O .env https://github.com/florianzilliox/mcp-slack/releases/latest/download/default.env.dist
 nano .env # Edit .env file with your tokens from step 1 of the setup guide
 docker network create app-tier
 docker-compose up -d

@@ -1,0 +1,11 @@
+{
+  "name": "mcp-slack-windows-amd64",
+  "version": "1.1.0",
+  "description": "Binaire de plateforme pour mcp-slack (serveur MCP Slack en lecture, local).",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ]
+}

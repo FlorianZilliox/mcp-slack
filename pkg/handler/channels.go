@@ -7,12 +7,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/gocarina/gocsv"
 	"github.com/florianzilliox/mcp-slack/pkg/provider"
-	"github.com/slack-go/slack"
 	"github.com/florianzilliox/mcp-slack/pkg/server/auth"
 	"github.com/florianzilliox/mcp-slack/pkg/text"
+	"github.com/gocarina/gocsv"
 	"github.com/mark3labs/mcp-go/mcp"
+	"github.com/slack-go/slack"
 	"go.uber.org/zap"
 )
 

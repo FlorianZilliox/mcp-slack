@@ -259,12 +259,12 @@ func TestChannelIDPatterns(t *testing.T) {
 		channel string
 		needs   bool
 	}{
-		{"C1234567890", false},  // Standard channel ID
-		{"G1234567890", false},  // Private channel ID (legacy)
-		{"D1234567890", false},  // DM ID
-		{"#general", true},      // Channel name - needs lookup
-		{"@john.doe", true},     // User DM name - needs lookup
-		{"", false},             // Empty - no lookup
+		{"C1234567890", false}, // Standard channel ID
+		{"G1234567890", false}, // Private channel ID (legacy)
+		{"D1234567890", false}, // DM ID
+		{"#general", true},     // Channel name - needs lookup
+		{"@john.doe", true},    // User DM name - needs lookup
+		{"", false},            // Empty - no lookup
 	}
 
 	for _, tt := range tests {
@@ -315,7 +315,7 @@ func TestGetCacheDir(t *testing.T) {
 	dir := getCacheDir()
 
 	assert.NotEmpty(t, dir, "cache dir should not be empty")
-	assert.Contains(t, dir, "slack-mcp-server", "cache dir should contain app name")
+	assert.Contains(t, dir, "mcp-slack", "cache dir should contain app name")
 
 	// Directory should exist after getCacheDir() creates it
 	info, err := os.Stat(dir)

@@ -16,7 +16,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "login" {
 		runLogin(os.Args[2:])
@@ -75,6 +74,12 @@ func main() {
 			os.Setenv("SLACK_MCP_XOXC_TOKEN", a.XOXC)
 			os.Setenv("SLACK_MCP_XOXD_TOKEN", a.XOXD)
 			logger.Info("Session chargee depuis la config locale (mcp-slack login)", zap.String("context", "console"))
+		} else {
+			// Pas de session rangee et aucun token fourni : on laisse quand meme
+			// le serveur demarrer (pour ne pas casser le handshake MCP), mais on
+			// explique sur stderr comment se connecter.
+			logger.Warn("Aucune session Slack trouvee. Ouvre une session avec : mcp-slack login <workspace> (par exemple : mcp-slack login etf1), puis relance Claude.",
+				zap.String("context", "console"))
 		}
 	}
 
@@ -279,7 +284,7 @@ func newLogger(transport string) (*zap.Logger, error) {
 		return nil, err
 	}
 
-	logger = logger.With(zap.String("app", "slack-mcp-server"))
+	logger = logger.With(zap.String("app", "mcp-slack"))
 
 	return logger, err
 }

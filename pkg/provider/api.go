@@ -70,7 +70,7 @@ func atomicWriteFile(path string, data []byte, perm os.FileMode) error {
 	return nil
 }
 
-// getCacheDir returns the appropriate cache directory for slack-mcp-server
+// getCacheDir returns the appropriate cache directory for mcp-slack
 func getCacheDir() string {
 	cacheDir, err := os.UserCacheDir()
 	if err != nil {
@@ -78,7 +78,7 @@ func getCacheDir() string {
 		return "."
 	}
 
-	dir := filepath.Join(cacheDir, "slack-mcp-server")
+	dir := filepath.Join(cacheDir, "mcp-slack")
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		// Fallback to current directory if we can't create cache dir
 		return "."

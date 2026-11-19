@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/florianzilliox/mcp-slack/pkg/test/util"
+	"github.com/google/uuid"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 	"github.com/openai/openai-go/packages/param"
@@ -94,7 +94,7 @@ func TestIntegrationConversations(t *testing.T) {
 				Tools: []responses.ToolUnionParam{
 					{
 						OfMcp: &responses.ToolMcpParam{
-							ServerLabel: "slack-mcp-server",
+							ServerLabel: "mcp-slack",
 							ServerURL:   fmt.Sprintf("%s://%s/sse", fwd.URL.Scheme, fwd.URL.Host),
 							RequireApproval: responses.ToolMcpRequireApprovalUnionParam{
 								OfMcpToolApprovalSetting: param.NewOpt("never"),
