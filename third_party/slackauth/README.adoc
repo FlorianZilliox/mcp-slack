@@ -1,0 +1,145 @@
+= Slackauth
+:hide-uri-scheme:
+
+Slackauth is an experimental Slack authentication library using
+https://github.com/go-rod/rod[Rod] library.
+
+The advantage over the Playwright is that rod utilises 
+https://chromedevtools.github.io/devtools-protocol/[CDP], which is faster
+and does not require nodejs.  The drawback is that it can't use Firefox.
+
+https://pkg.go.dev/github.com/rusq/slackauth[Go package documentation]
+
+== Types of login
+
+The library implements two types of Login:
+
+1. Manual (interactive)
+2. Headless (automatic)
+
+=== Manual (interactive)
+
+In the Manual mode, the browser opens on the address of the Slack
+workspace, and user needs to follow the usual authentication flow, it could be
+a Email/Password, SSO, etc., except Google Auth.  Google has bot detection
+that detects the puppet browser (read below)
+
+Call the `client.Manual` function to start the Manual login.  It will
+block until the timeout expires or the user does something, i.e. logs in or
+closes the page/browser.
+
+The library detects if the user closes the tab with Slack website or the
+browser, in this case the function returns an error.  It doesn't track the
+website that user is on, so user can navigate away and browse the web, if they
+decide so, until the timeout destroys the browser.
+
+==== Google Auth
+
+Google Authentication is a special case, as it detects the automated browser.
+To authenticate with Google Auth, one needs to use the "WithForceUser" when
+initialising the client with "New", i.e.:
+
+[source,go]
+---
+cl, err := slackauth.New("my_workspace", slackauth.WithForceUser)
+// check error
+---
+
+The user browser must be closed completely (the browser process should not be
+started) before using this option, otherwise ROD will fail to establish the
+connection to the browser, and return an error.
+
+When "cl.Manual()" is called, it will start up the Chrome-family browser
+installed on the system and offer the user to login.  If the browser already
+logged in to the requested workspace, it will hijack the cookies immediately
+after the slack page loads without any required user interaction.
+
+==== Example
+
+[source,go]
+----
+func browserLogin(ctx context.Context) {
+	const workspace = "some workspace"
+	ctx, cancel := context.WithTimeoutCause(ctx, 180*time.Second, errors.New("user too slow"))
+	defer cancel()
+
+	cl, err := slackauth.New(workspace, slackauth.WithNoConsentPrompt())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cl.Close()
+
+	token, cookies, err := cl.Manual(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(token)
+	fmt.Println(cookies)
+}
+----
+
+=== Headless
+
+In the Headless mode, the browser is not visible to the user, and the
+authentication flow is automated.  The user needs to provide the workspace,
+email and password, and the library will do the rest.
+
+Call the `slackauth.Headless` function to start the Headless login.  It will
+block until login succeeds or fails.
+
+There's a special case when Slack does not recognise the browser and asks the
+user to enter the confirmation code that was sent on the user's email.  In
+this case, Headless calls the provided interactive challenge function (see the
+`WithChallengeFunc` option) and waits for the user to enter the code.  After
+the user enters the code, it will be passed to the page and the login process
+will continue.
+
+There's the fallback challenge function, but it's simple and ugly, so you're
+encouraged to provide your own beautiful one.
+
+Overall, headless login looks nicer, but more fragile - it will start failing
+should Slack decide to change the login elements.
+
+==== Example
+
+[source,go]
+----
+func autoLogin(ctx context.Context) {
+	ctx, cancel := context.WithTimeoutCause(ctx, 180*time.Second, errors.New("user too slow"))
+	defer cancel()
+
+	workspace := envOrScan("AUTH_WORKSPACE", "Enter workspace: ")
+	username := envOrScan("EMAIL", "Enter email: ")
+	password := envOrScan("PASSWORD", "Enter password: ")
+
+	cl, err := slackauth.New(ctx, workspace, slackauth.WithDebug(), slackauth.WithNoConsentPrompt())
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cl.Close()
+
+	token, cookies, err := cl.Headless(ctx, username, password)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(token)
+	fmt.Println(cookies)
+}
+
+func envOrScan(env, prompt string) string {
+	v := os.Getenv(env)
+	if v != "" {
+		return v
+	}
+	for v == "" {
+		fmt.Print(prompt)
+		fmt.Scanln(&v)
+	}
+	return v
+}
+----
+
+== References
+- https://pkg.go.dev/github.com/rusq/slackauth[slackauth package documentation]
+- https://go-rod.github.io/[Rod documentation]
+- https://chromedevtools.github.io/devtools-protocol/1-3/[Chrome DevTools Protocol (stable, 1.3)]
