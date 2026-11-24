@@ -20,6 +20,11 @@ func (c *Client) newBrwsrLauncher(headless bool) *launcher.Launcher {
 	if binpath, ok := c.opts.browserPath(); ok {
 		l = l.Bin(binpath)
 	}
+	// Profil persistant : la session Slack est conservée entre deux lancements,
+	// ce qui permet un rafraîchissement silencieux (sans SSO) tant qu'elle vit.
+	if c.opts.userDataDir != "" {
+		l = l.UserDataDir(c.opts.userDataDir)
+	}
 	return l
 }
 

@@ -327,10 +327,14 @@ func detectBrowserFromUserAgent(userAgent string) utls.ClientHelloID {
 	}
 
 	if strings.Contains(ua, "chrome/") {
-		return utls.HelloChrome_Auto
+		// Empreinte Chrome la plus récente de cette version d'utls (133).
+		// HelloChrome_Auto reste figé sur une version ancienne que Slack
+		// repère désormais (403). Chrome fait peu évoluer son ClientHello,
+		// donc 133 reste proche des Chrome plus récents.
+		return utls.HelloChrome_133
 	}
 
-	return utls.HelloChrome_Auto
+	return utls.HelloChrome_133
 }
 
 // ProvideHTTPClient creates an HTTP client with optional uTLS support

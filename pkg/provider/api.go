@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -682,13 +684,61 @@ func New(transport string, logger *zap.Logger) *ApiProvider {
 		logger.Fatal("Authentication required: Either SLACK_MCP_XOXP_TOKEN, SLACK_MCP_XOXB_TOKEN, or both SLACK_MCP_XOXC_TOKEN and SLACK_MCP_XOXD_TOKEN must be provided")
 	}
 
-	authProvider, err = auth.NewValueAuth(xoxcToken, xoxdToken)
+	authProvider, err = buildXOXCAuth(xoxcToken, xoxdToken)
 	if err != nil {
 		logger.Fatal("Failed to create auth provider with XOXC/XOXD tokens", zap.Error(err))
 	}
 
 	return newWithXOXC(transport, authProvider, logger)
 }
+
+// AuthRefreshFunc, posé par le programme principal, rafraîchit la session Slack
+// (fenêtre Chrome depuis le profil gardé, sans SSO tant qu'il est connecté) et
+// recharge les variables d'environnement xoxc/xoxd/d-s/dbd depuis auth.json.
+// Quand il est défini, le serveur tente ce rafraîchissement au lieu de mourir
+// si la session est refusée au démarrage.
+var AuthRefreshFunc func() error
+
+// buildXOXCAuth construit le fournisseur d'auth à partir des variables
+// d'environnement (xoxc + cookies d, d-s, dbd).
+func buildXOXCAuth(xoxcToken, xoxdToken string) (auth.ValueAuth, error) {
+	// Quand le vrai cookie « d-s » est connu (capturé par « mcp-slack login »),
+	// on l'envoie tel quel. NewValueAuth fabrique sinon un faux « d-s » (un
+	// horodatage), que Slack rejette désormais par une 403.
+	if xoxdS := os.Getenv("SLACK_MCP_XOXD_S"); xoxdS != "" {
+		cookies := []*http.Cookie{
+			slackSessionCookie("d", xoxdToken),
+			slackSessionCookie("d-s", xoxdS),
+		}
+		// Le cookie « dbd » (signature d'appareil signée par Slack) est
+		// désormais exigé : sans lui, l'API renvoie 403.
+		if dbd := os.Getenv("SLACK_MCP_DBD"); dbd != "" {
+			cookies = append(cookies, slackSessionCookie("dbd", dbd))
+		}
+		return auth.NewValueCookiesAuth(xoxcToken, cookies)
+	}
+	return auth.NewValueAuth(xoxcToken, xoxdToken)
+}
+
+// slackSessionCookie construit un cookie de session Slack (domaine .slack.com).
+// La valeur est envoyée telle quelle, car elle est déjà sous la forme du cookie
+// du navigateur (déjà encodée) ; on ne la ré-encode que si elle contient un
+// caractère hors du jeu sûr, comme le fait slackdump.
+func slackSessionCookie(name, value string) *http.Cookie {
+	if reCookieURLsafe.ReplaceAllString(value, "") != "" {
+		value = url.QueryEscape(value)
+	}
+	return &http.Cookie{
+		Name:    name,
+		Value:   value,
+		Path:    "/",
+		Domain:  ".slack.com",
+		Expires: time.Now().AddDate(10, 0, 0).UTC(),
+		Secure:  true,
+	}
+}
+
+var reCookieURLsafe = regexp.MustCompile(`[-._~%a-zA-Z0-9]+`)
 
 func newWithXOXP(transport string, authProvider auth.ValueAuth, logger *zap.Logger) *ApiProvider {
 	var (
@@ -757,8 +807,22 @@ func newWithXOXC(transport string, authProvider auth.ValueAuth, logger *zap.Logg
 	)
 
 	teamID, err := validateAuthAndGetTeamID(authProvider, logger)
+	if err != nil && AuthRefreshFunc != nil {
+		// Session expirée (403 / invalid_auth) : on tente un rafraîchissement
+		// automatique depuis le profil Chrome gardé (fenêtre ~15 s, sans SSO
+		// tant qu'il est connecté), puis on réessaie une fois. Ce n'est que si
+		// le profil lui-même est déconnecté que le SSO redevient nécessaire.
+		logger.Warn("Session Slack refusée, tentative de rafraîchissement automatique…",
+			zap.String("context", "console"), zap.Error(err))
+		if rErr := AuthRefreshFunc(); rErr != nil {
+			logger.Warn("Rafraîchissement automatique impossible", zap.String("context", "console"), zap.Error(rErr))
+		} else if np, bErr := buildXOXCAuth(os.Getenv("SLACK_MCP_XOXC_TOKEN"), os.Getenv("SLACK_MCP_XOXD_TOKEN")); bErr == nil {
+			authProvider = np
+			teamID, err = validateAuthAndGetTeamID(authProvider, logger)
+		}
+	}
 	if err != nil {
-		logger.Fatal("Authentication failed - check your Slack tokens", zap.Error(err))
+		logger.Fatal("Authentication failed - session à renouveler : mcp-slack login <workspace>", zap.Error(err))
 	}
 
 	usersCache := os.Getenv("SLACK_MCP_USERS_CACHE")

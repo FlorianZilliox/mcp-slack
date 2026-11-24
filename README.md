@@ -31,8 +31,13 @@ Ce qui se passe ensuite :
 1. Le script télécharge le bon programme pour ta machine et l'installe.
 2. Il te demande le sous-domaine de ton espace Slack (par exemple `etf1` pour
    `etf1.slack.com`).
-3. Une fenêtre de navigateur s'ouvre : connecte-toi à Slack normalement (SSO
-   compris). La fenêtre se ferme toute seule une fois la connexion récupérée.
+3. Une fenêtre de navigateur s'ouvre : connecte-toi à Slack normalement. Si ton
+   entreprise passe par une connexion unique (SSO), utilise le bouton prévu
+   pour ça plutôt que le formulaire e-mail et mot de passe. La fenêtre se ferme
+   toute seule une fois la connexion récupérée.
+
+   Il faut Google Chrome, Microsoft Edge ou Brave installé : Slack refuse les
+   navigateurs trop anciens.
 4. Redémarre Claude (ferme et rouvre la fenêtre VS Code si tu utilises
    l'extension). C'est prêt.
 
@@ -46,10 +51,16 @@ Dans Claude Code (dans VS Code aussi), tu peux simplement écrire :
 Claude lit ce fichier et lance l'installation à ta place. Il te demandera juste
 le sous-domaine de ton espace Slack, puis une fenêtre s'ouvrira pour te connecter.
 
-## Se reconnecter plus tard
+## Quand la session expire
 
-Si ta session Slack expire, ou pour te connecter à un autre espace, relance
-simplement la connexion :
+En général, tu n'as rien à faire. La session Slack expire régulièrement : au
+démarrage suivant, le serveur s'en aperçoit et se reconnecte tout seul. Une
+fenêtre de navigateur s'ouvre alors une quinzaine de secondes, puis se ferme.
+Pas besoin de te reconnecter : il réutilise le profil de navigateur gardé lors de
+ta première connexion.
+
+Si ce profil a lui-même été déconnecté de Slack, ou pour te connecter à un autre
+espace, relance la connexion à la main :
 
 ```sh
 mcp-slack login <workspace>
@@ -60,9 +71,12 @@ c'est reparti.
 
 ## Désinstaller
 
-Retire l'entrée de Claude Code puis supprime le programme :
+Retire l'entrée de Claude Code, supprime le programme, puis la session et le
+profil de navigateur gardé (sur Mac, ils sont dans
+`~/Library/Application Support/mcp-slack`) :
 
 ```sh
 claude mcp remove mcp-slack
 rm ~/.local/bin/mcp-slack
+rm -rf ~/Library/Application\ Support/mcp-slack
 ```

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 	"sync"
 	"time"
@@ -19,6 +20,10 @@ import (
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "login" {
 		runLogin(os.Args[2:])
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "refresh" {
+		runRefresh(os.Args[2:])
 		return
 	}
 
@@ -71,9 +76,33 @@ func main() {
 
 	if os.Getenv("SLACK_MCP_XOXC_TOKEN") == "" && os.Getenv("SLACK_MCP_XOXP_TOKEN") == "" && os.Getenv("SLACK_MCP_XOXB_TOKEN") == "" {
 		if a, err := loadStoredAuth(); err == nil && a.XOXC != "" && a.XOXD != "" {
-			os.Setenv("SLACK_MCP_XOXC_TOKEN", a.XOXC)
-			os.Setenv("SLACK_MCP_XOXD_TOKEN", a.XOXD)
+			applyStoredAuthEnv(a)
 			logger.Info("Session chargee depuis la config locale (mcp-slack login)", zap.String("context", "console"))
+			// Rafraîchissement automatique : quand la session est refusée au
+			// démarrage, le serveur relance « mcp-slack refresh » (fenêtre Chrome
+			// ~15 s depuis le profil gardé, sans SSO tant qu'il est connecté),
+			// recharge la session, et réessaie, au lieu de mourir.
+			ws := a.Workspace
+			provider.AuthRefreshFunc = func() error {
+				if ws == "" {
+					return fmt.Errorf("workspace inconnu")
+				}
+				exe, exeErr := os.Executable()
+				if exeErr != nil {
+					exe = os.Args[0]
+				}
+				cmd := exec.Command(exe, "refresh", ws)
+				cmd.Stderr = os.Stderr
+				if runErr := cmd.Run(); runErr != nil {
+					return runErr
+				}
+				na, loadErr := loadStoredAuth()
+				if loadErr != nil {
+					return loadErr
+				}
+				applyStoredAuthEnv(na)
+				return nil
+			}
 		} else {
 			// Pas de session rangee et aucun token fourni : on laisse quand meme
 			// le serveur demarrer (pour ne pas casser le handshake MCP), mais on

@@ -51,7 +51,9 @@ type options struct {
 	cookies     []*http.Cookie
 	userAgent   string
 	autoTimeout time.Duration
-	forceUser   bool // forces opening a browser with user data, instead of the clean one
+	forceUser   bool   // forces opening a browser with user data, instead of the clean one
+	userDataDir string // dossier de profil persistant (session conservée entre lancements)
+	headless    bool   // lance le navigateur sans fenêtre (rafraîchissement silencieux)
 
 	useBundledBrwsr bool   // forces using a bundled browser
 	localBrowser    string // path to the local browser binary
@@ -164,6 +166,23 @@ func WithBundledBrowser() Option {
 func WithLocalBrowser(path string) Option {
 	return func(o *options) {
 		o.localBrowser = path
+	}
+}
+
+// WithUserDataDir fait pointer le navigateur sur un dossier de profil
+// persistant. La session reste connectée entre deux lancements, ce qui permet
+// de récupérer une session fraîche plus tard sans refaire le SSO.
+func WithUserDataDir(dir string) Option {
+	return func(o *options) {
+		o.userDataDir = dir
+	}
+}
+
+// WithHeadless lance le navigateur sans fenêtre visible. Utile pour le
+// rafraîchissement silencieux à partir d'un profil déjà connecté.
+func WithHeadless(b bool) Option {
+	return func(o *options) {
+		o.headless = b
 	}
 }
 
@@ -340,7 +359,7 @@ func (c *Client) startBrowser(ctx context.Context) (*rod.Browser, error) {
 	if c.opts.forceUser {
 		l = c.usrBrwsrLauncher()
 	} else {
-		l = c.newBrwsrLauncher(false)
+		l = c.newBrwsrLauncher(c.opts.headless)
 	}
 	url, err := l.Context(ctx).Launch()
 	if err != nil {
