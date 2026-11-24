@@ -10,6 +10,9 @@ RUN apt-get update  \
 WORKDIR /app
 
 COPY go.mod go.sum ./
+# go.mod remplace slackauth par le fork local (replace => ./third_party/slackauth) :
+# il doit être présent avant le téléchargement des dépendances.
+COPY third_party/ ./third_party/
 
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
