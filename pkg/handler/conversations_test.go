@@ -21,7 +21,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// skipWithoutSlackCreds ignore un test d'intégration quand les identifiants de
+// test ne sont pas fournis : ces tests parlent à un vrai Slack, passent par un
+// tunnel ngrok et, pour certains, appellent OpenAI. Sans ces secrets (cas de ce
+// dépôt), ils sont ignorés au lieu d'échouer.
+func skipWithoutSlackCreds(t *testing.T, extra ...string) {
+	t.Helper()
+	for _, k := range append([]string{"SLACK_MCP_XOXP_TOKEN", "NGROK_AUTH_TOKEN"}, extra...) {
+		if os.Getenv(k) == "" {
+			t.Skipf("%s absent : test d'intégration ignoré (il faut un Slack de test)", k)
+		}
+	}
+}
+
 func TestIntegrationConversations(t *testing.T) {
+	skipWithoutSlackCreds(t, "SLACK_MCP_OPENAI_API")
 	sseKey := uuid.New().String()
 	require.NotEmpty(t, sseKey, "sseKey must be generated for integration tests")
 	apiKey := os.Getenv("SLACK_MCP_OPENAI_API")

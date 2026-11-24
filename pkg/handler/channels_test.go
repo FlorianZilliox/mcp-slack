@@ -30,6 +30,7 @@ type matchingRule struct {
 
 func setupTestEnv(t *testing.T) (*testEnv, func()) {
 	t.Helper()
+	skipWithoutSlackCreds(t)
 
 	sseKey := uuid.New().String()
 	require.NotEmpty(t, sseKey, "sseKey must be generated for integration tests")
